@@ -41,7 +41,7 @@ The card has four layouts (Minimal, Big, Detailed, Karaoke) and 20 presets, and 
 
 ## Quick start
 ```sh
-git clone https://github.com/YOUR-USERNAME/car-lyrics.git && cd car-lyrics
+git clone https://github.com/ispa21/car-lyrics.git && cd car-lyrics
 cp Local.xcconfig.example Local.xcconfig   # add your Apple team ID (and Spotify Client ID)
 xcodegen
 open LyricsDash.xcodeproj                  # pick your iPhone, press ⌘R

@@ -17,7 +17,11 @@ The card has four layouts (Minimal, Big, Detailed, Karaoke) and 20 presets, and 
   <img src="docs/screenshots/lockscreen-card-layouts.png" width="300" alt="Card layouts as shown on the Lock Screen">
 </p>
 
-> These are renders of the card from the app. Photos from a real car are welcome: see [Contributing](CONTRIBUTING.md).
+The card on a real CarPlay screen (Apple's CarPlay Simulator connected to an iPhone, demo song):
+
+<p align="center"><img src="docs/screenshots/carplay-real.png" width="360" alt="Lyrics Dash card on the CarPlay dashboard"></p>
+
+> The layout images above are renders of the card from the app. Photos from a real car are welcome: see [Contributing](CONTRIBUTING.md).
 
 ## More screenshots
 

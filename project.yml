@@ -1,0 +1,78 @@
+# Generate the Xcode project: `xcodegen` (then open LyricsDash.xcodeproj).
+# Xcode-sideloaded build only; nothing here is meant for App Store review.
+name: LyricsDash
+options:
+  bundleIdPrefix: com.ishanpatil
+  deploymentTarget:
+    iOS: "26.0"   # Live Activities on CarPlay need iOS 26
+packages:
+  LyricsCore:
+    path: LyricsCore
+# Your team ID and Spotify Client ID live in Local.xcconfig (gitignored; copy Local.xcconfig.example).
+configFiles:
+  Debug: Config.xcconfig
+  Release: Config.xcconfig
+settings:
+  base:
+    CODE_SIGN_STYLE: Automatic
+    SWIFT_VERSION: "6.0"
+    MARKETING_VERSION: "0.1"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  LyricsDash:
+    type: application
+    platform: iOS
+    sources: [App, Shared]
+    dependencies:
+      - package: LyricsCore
+      - target: LyricsWidget
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: Lyrics Dash
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        NSSupportsLiveActivities: true
+        SpotifyClientID: $(SPOTIFY_CLIENT_ID)
+        # A larger update budget from iOS; adds "More Frequent Updates" under Settings → Lyrics Dash → Live Activities.
+        # Apple's engineers recommend it for activities updated often (developer forums, thread 776031).
+        NSSupportsLiveActivitiesFrequentUpdates: true
+        NSAppleMusicUsageDescription: Reads which song Apple Music is playing so the matching lyrics can be shown.
+        # ponytail: silent mixable audio and low-accuracy location keep the updater alive in the background.
+        # Fine for a personal build; App Review would reject it.
+        UIBackgroundModes: [audio, location]
+        NSLocationWhenInUseUsageDescription: Lyrics Dash uses low-accuracy location only to keep running in the background, so lyrics keep moving while you drive. Your location isn't stored or sent anywhere.
+        # lyricsdash://start and lyricsdash://open, from the widget.
+        CFBundleURLTypes:
+          - CFBundleURLName: com.ishanpatil.lyricsdash
+            CFBundleURLSchemes: [lyricsdash]
+        # The keychain group the app and widget share (see SharedKeychain); a free Apple ID has no App Groups.
+        SharedKeychainGroup: $(DEVELOPMENT_TEAM).com.ishanpatil.lyricsdash.shared
+    entitlements:
+      path: App/LyricsDash.entitlements
+      properties:
+        keychain-access-groups: [$(DEVELOPMENT_TEAM).com.ishanpatil.lyricsdash.shared]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.ishanpatil.lyricsdash
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor  # the coral from the app icon
+  LyricsWidget:
+    type: app-extension
+    platform: iOS
+    sources: [Widget, Shared]
+    dependencies:
+      - package: LyricsCore
+    info:
+      path: Widget/Info.plist
+      properties:
+        CFBundleDisplayName: Lyrics Dash
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+        SharedKeychainGroup: $(DEVELOPMENT_TEAM).com.ishanpatil.lyricsdash.shared
+    entitlements:
+      path: Widget/LyricsWidget.entitlements
+      properties:
+        keychain-access-groups: [$(DEVELOPMENT_TEAM).com.ishanpatil.lyricsdash.shared]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.ishanpatil.lyricsdash.widget
